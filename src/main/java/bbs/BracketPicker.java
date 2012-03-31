@@ -16,7 +16,7 @@ public class BracketPicker {
     	Random random = new Random(System.currentTimeMillis());
 
     	
-	    int numBrackets = 1000000;
+	    int numBrackets = 100000;
 	    Tournament tournament = new Tournament();
 	    conn.setAutoCommit(false);
     	PreparedStatement ps =conn.prepareStatement("insert into bracket (name, round1, round2, round3, round4, round5, round6, score1, score2, score3, score4, score5, score6, total) values (?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0, 0, 0, 0)");
@@ -55,21 +55,11 @@ public class BracketPicker {
 	    	ps.setLong(5, b.getPickBits(3));
 	    	ps.setLong(6, b.getPickBits(4));
 	    	ps.setLong(7, b.getPickBits(5));
-	    	ps.addBatch();
-	    	if (i % 5000 == 0) {
-	    		int[] updates = ps.executeBatch();
-	    		conn.commit();
-	    		int sumOfUpdates = 0;
-	    		for (int j = 0; j < updates.length; j++) {
-	    			sumOfUpdates += updates[j];
-	    		}
-	    		System.out.println(sumOfUpdates);
-	    	}
-	    	
+	    	ps.execute();
 	    }
-	    ps.executeBatch();
 	    conn.commit();
 	    ps.close();
 	    conn.close();
+	    System.out.println("Done");
 	}
 }
