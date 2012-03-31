@@ -132,12 +132,6 @@ public class Scorer {
 	    	int score6 = b.countCorrectPicks(5) * 32;
 	    	int total = score1 + score2 + score3 + score4 + score5 + score6;
 	    	
-//	    	System.out.println("----------------------");
-//	    	System.out.println("ID: " + bracketId);
-//	    	for(Teams t : b.getCorrectPicks(0)) {
-//	    		System.out.println(t);
-//	    	}
-	    	
 	    	psUpdate.setInt(1, score1);
 	    	psUpdate.setInt(2, score2);
 	    	psUpdate.setInt(3, score3);
@@ -146,24 +140,19 @@ public class Scorer {
 	    	psUpdate.setInt(6, score6);
 	    	psUpdate.setInt(7, total);
 	    	psUpdate.setInt(8, bracketId);
-	    	psUpdate.addBatch();
+	    	psUpdate.execute();
 	    	updates++;
 	    	if (updates % 25000 == 0) {
 	    	    long end = System.currentTimeMillis();
-	    	    System.out.println("Records batched: " + updates + " in " + (end - start) + " ms.");
-	    	    psUpdate.executeBatch();	    		
+	    	    System.out.println("Records udpated: " + updates + " in " + (end - start) + " ms.");
 	    	}
 	    	
 	    }
 	    
-	    long end = System.currentTimeMillis();
-	    System.out.println("Records batched: " + updates + " in " + (end - start) + " ms.");
-	    psUpdate.executeBatch();
-	    
 	    conn.commit();
 	    conn.close();
-	    end = System.currentTimeMillis();
-	    System.out.println("Records scored: " + updates + " in " + (end - start) + " ms.");
+	    long end = System.currentTimeMillis();
+	    System.out.println("Records committed: " + updates + " in " + (end - start) + " ms.");
 	}
 
 }
