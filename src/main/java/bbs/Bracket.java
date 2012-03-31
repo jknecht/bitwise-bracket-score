@@ -1,5 +1,8 @@
 package bbs;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class Bracket {
 	private Tournament tournament;
@@ -10,14 +13,41 @@ public class Bracket {
 		this.tournament = tournament;
 	}
 	
-	void setPick(int round, Teams pick) {
-		roundPicks[round] = roundPicks[round] | (1 << pick.ordinal());
+	public void setPick(int round, Teams pick) {
+		roundPicks[round] = roundPicks[round] | (1L << pick.ordinal());
 	}
 	
-	int countCorrectPicks(int round) {
+	public int countCorrectPicks(int round) {
 		long correctPicks = roundPicks[round] & tournament.getWinners(round);
 		return Long.bitCount(correctPicks);
 	}
 	
+	public long getPickBits(int round) {
+		return roundPicks[round];
+	}
 	
+	public void setPickBits(int round, long picks) {
+		roundPicks[round] = picks;
+	}
+	
+	public List<Teams> getPicks(int round) {
+		ArrayList<Teams> teams = new ArrayList<Teams>();
+		for (int i = 0; i < Teams.values().length; i++) {
+			if ((roundPicks[round] & (1L << i)) == (1L << i)) {
+				teams.add(Teams.values()[i]);
+			}
+		}
+		return teams;
+	}
+
+	public List<Teams> getCorrectPicks(int round) {
+		ArrayList<Teams> teams = new ArrayList<Teams>();
+		for (int i = 0; i < Teams.values().length; i++) {
+			if ((roundPicks[round] & tournament.getWinners(round) & (1L << i)) == (1L << i)) {
+				teams.add(Teams.values()[i]);
+			}
+		}
+		return teams;
+	}
+
 }
